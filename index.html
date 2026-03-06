@@ -210,25 +210,6 @@
             margin-top: 5px;
         }
         
-        /* 新增：只读框标签样式 */
-        .calculated-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-        
-        .dimension-label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            min-width: 60px;
-            text-align: left;
-        }
-        
-        .dimension-label.yuck { color: var(--yuck-color); }
-        .dimension-label.yjij { color: var(--yjij-color); }
-        .dimension-label.fff { color: var(--fff-color); }
-        
         .percentage-section {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -368,8 +349,6 @@
             .number-input-group { flex-direction: column; gap: 8px; }
             .number-input-container { width: 100%; }
             .vs-text { text-align: center; display: block; }
-            .calculated-container { width: 100%; }
-            .dimension-label { min-width: 50px; }
             .percentage-section { grid-template-columns: 1fr; gap: 10px; }
             .dimension-percentage { padding: 12px 10px; }
             .dimension-percentage .percentage { font-size: 1.4rem; }
@@ -469,15 +448,12 @@
                 </div>
                 <div class="comparison-inputs">
                     <div class="input-row">
-                        <div class="input-label yuck-tag">Yuck (轻)</div>
+                        <div class="input-label yuck-tag">Yuck (轻)：F.F.F.（重）</div>
                         <div class="number-input-group">
                             <div class="number-input-container">
                                 <input type="number" class="number-input editable" id="comparison1_yuck" min="0" max="10" value="5" oninput="updateComparison1()" onblur="fixNumberInput(this)" onfocus="this.select()">
                                 <span class="vs-text">vs</span>
-                                <div class="calculated-container">
-                                    <input type="number" class="number-input calculated" id="comparison1_fff" readonly tabindex="-1">
-                                    <span class="dimension-label fff">F.F.F.</span>
-                                </div>
+                                <input type="number" class="number-input calculated" id="comparison1_fff" readonly tabindex="-1">
                             </div>
                         </div>
                     </div>
@@ -503,15 +479,12 @@
                 </div>
                 <div class="comparison-inputs">
                     <div class="input-row">
-                        <div class="input-label yuck-tag">Yuck (异)</div>
+                        <div class="input-label yuck-tag">Yuck (异)：YJIJ (众)</div>
                         <div class="number-input-group">
                             <div class="number-input-container">
                                 <input type="number" class="number-input editable" id="comparison2_yuck" min="0" max="10" value="5" oninput="updateComparison2()" onblur="fixNumberInput(this)" onfocus="this.select()">
                                 <span class="vs-text">vs</span>
-                                <div class="calculated-container">
-                                    <input type="number" class="number-input calculated" id="comparison2_yjij" readonly tabindex="-1">
-                                    <span class="dimension-label yjij">YJIJ</span>
-                                </div>
+                                <input type="number" class="number-input calculated" id="comparison2_yjij" readonly tabindex="-1">
                             </div>
                         </div>
                     </div>
@@ -537,15 +510,12 @@
                 </div>
                 <div class="comparison-inputs">
                     <div class="input-row">
-                        <div class="input-label fff-tag">F.F.F. (内)</div>
+                        <div class="input-label fff-tag">F.F.F. (内)：YJIJ (外)</div>
                         <div class="number-input-group">
                             <div class="number-input-container">
                                 <input type="number" class="number-input editable" id="comparison3_fff" min="0" max="10" value="5" oninput="updateComparison3()" onblur="fixNumberInput(this)" onfocus="this.select()">
                                 <span class="vs-text">vs</span>
-                                <div class="calculated-container">
-                                    <input type="number" class="number-input calculated" id="comparison3_yjij" readonly tabindex="-1">
-                                    <span class="dimension-label yjij">YJIJ</span>
-                                </div>
+                                <input type="number" class="number-input calculated" id="comparison3_yjij" readonly tabindex="-1">
                             </div>
                         </div>
                     </div>
@@ -580,9 +550,9 @@
             <div id="plot"></div>
             <div class="instructions">
                 <strong>坐标解读：</strong><br>
-                • 左下方顶点：<strong>YJIJ</strong> (众/外)<br>
-                • 右下方顶点：<strong>Yuck</strong> (轻/异)<br>
-                • 上方顶点：<strong>F.F.F.</strong> (重/内)<br>
+                • 左下方顶点：<strong>YJIJ</strong> (极致/众/向外)<br>
+                • 右下方顶点：<strong>Yuck</strong> (戏谑/轻/异端)<br>
+                • 上方顶点：<strong>F.F.F.</strong> (真诚/重/向内)<br>
                 每个点的颜色由三个顶点颜色的渐变混合决定，离某个顶点越近，该顶点的颜色在混合色中越明显。
             </div>
         </div>
@@ -926,10 +896,10 @@
                     color: '#e0e0e0'
                 },
                 marker: {
-                    size: 20,
+                    size: 10,
                     color: blendedColors,
                     line: { 
-                        width: 1, 
+                        width: 2, 
                         color: '#ffffff' 
                     },
                     opacity: 0.9
