@@ -210,6 +210,25 @@
             margin-top: 5px;
         }
         
+        /* 新增：只读框标签样式 */
+        .calculated-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .dimension-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            min-width: 60px;
+            text-align: left;
+        }
+        
+        .dimension-label.yuck { color: var(--yuck-color); }
+        .dimension-label.yjij { color: var(--yjij-color); }
+        .dimension-label.fff { color: var(--fff-color); }
+        
         .percentage-section {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -349,6 +368,8 @@
             .number-input-group { flex-direction: column; gap: 8px; }
             .number-input-container { width: 100%; }
             .vs-text { text-align: center; display: block; }
+            .calculated-container { width: 100%; }
+            .dimension-label { min-width: 50px; }
             .percentage-section { grid-template-columns: 1fr; gap: 10px; }
             .dimension-percentage { padding: 12px 10px; }
             .dimension-percentage .percentage { font-size: 1.4rem; }
@@ -453,7 +474,10 @@
                             <div class="number-input-container">
                                 <input type="number" class="number-input editable" id="comparison1_yuck" min="0" max="10" value="5" oninput="updateComparison1()" onblur="fixNumberInput(this)" onfocus="this.select()">
                                 <span class="vs-text">vs</span>
-                                <input type="number" class="number-input calculated" id="comparison1_fff" readonly tabindex="-1">
+                                <div class="calculated-container">
+                                    <input type="number" class="number-input calculated" id="comparison1_fff" readonly tabindex="-1">
+                                    <span class="dimension-label fff">F.F.F.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -484,7 +508,10 @@
                             <div class="number-input-container">
                                 <input type="number" class="number-input editable" id="comparison2_yuck" min="0" max="10" value="5" oninput="updateComparison2()" onblur="fixNumberInput(this)" onfocus="this.select()">
                                 <span class="vs-text">vs</span>
-                                <input type="number" class="number-input calculated" id="comparison2_yjij" readonly tabindex="-1">
+                                <div class="calculated-container">
+                                    <input type="number" class="number-input calculated" id="comparison2_yjij" readonly tabindex="-1">
+                                    <span class="dimension-label yjij">YJIJ</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -515,7 +542,10 @@
                             <div class="number-input-container">
                                 <input type="number" class="number-input editable" id="comparison3_fff" min="0" max="10" value="5" oninput="updateComparison3()" onblur="fixNumberInput(this)" onfocus="this.select()">
                                 <span class="vs-text">vs</span>
-                                <input type="number" class="number-input calculated" id="comparison3_yjij" readonly tabindex="-1">
+                                <div class="calculated-container">
+                                    <input type="number" class="number-input calculated" id="comparison3_yjij" readonly tabindex="-1">
+                                    <span class="dimension-label yjij">YJIJ</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -896,13 +926,13 @@
                     color: '#e0e0e0'
                 },
                 marker: {
-                    size: 10,
+                    size: 20,
                     color: blendedColors,
                     line: { 
-                        width: 2, 
+                        width: 1, 
                         color: '#ffffff' 
                     },
-                    opacity: 0.2
+                    opacity: 0.9
                 },
                 hoverinfo: 'text',
                 hovertext: songs.map(s => 
