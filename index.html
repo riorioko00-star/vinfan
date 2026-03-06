@@ -140,25 +140,32 @@
             padding: 0 12px;
         }
         
-        .input-container {
+        .input-row {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 12px;
         }
         
         .input-label {
-            width: 100px;
+            width: 120px;
             text-align: center;
             font-weight: 600;
             font-size: 0.9rem;
         }
         
-        .number-input-wrapper {
+        .number-input-group {
             flex: 1;
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        
+        .number-input-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
         }
         
         .number-input {
@@ -175,10 +182,25 @@
             -moz-appearance: textfield;
         }
         
+        .number-input.editable {
+            border-color: var(--yuck-color);
+        }
+        
+        .number-input.calculated {
+            border-color: var(--border-color);
+            background: rgba(70, 70, 70, 0.8);
+        }
+        
         .number-input::-webkit-outer-spin-button,
         .number-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
+        }
+        
+        .vs-text {
+            font-weight: 300;
+            color: var(--text-secondary);
+            padding: 0 5px;
         }
         
         .input-sum {
@@ -322,8 +344,11 @@
             .header p { font-size: 0.85rem; }
             .card { padding: 16px; }
             .dimension-pair { flex-direction: column; gap: 8px; }
-            .input-container { flex-direction: column; align-items: stretch; }
+            .input-row { flex-direction: column; align-items: stretch; gap: 10px; }
             .input-label { width: 100%; text-align: left; font-size: 0.85rem; }
+            .number-input-group { flex-direction: column; gap: 8px; }
+            .number-input-container { width: 100%; }
+            .vs-text { text-align: center; display: block; }
             .percentage-section { grid-template-columns: 1fr; gap: 10px; }
             .dimension-percentage { padding: 12px 10px; }
             .dimension-percentage .percentage { font-size: 1.4rem; }
@@ -419,19 +444,17 @@
                     <strong>轻与重</strong>：你从这首歌身上感到怎样的重量呢。Yuck代表的"轻"，是戏谑、流动、有趣，是永恒少年；F.F.F.代表的"重"是真诚、自剖、带有血色的重量。
                 </div>
                 <div class="comparison-detail">
-                    输入0-10分，两个分数之和必须为10
+                    输入0-10分，修改Yuck分数，F.F.F.会自动计算
                 </div>
                 <div class="comparison-inputs">
-                    <div class="input-container">
+                    <div class="input-row">
                         <div class="input-label yuck-tag">Yuck (轻)</div>
-                        <div class="number-input-wrapper">
-                            <input type="number" class="number-input" id="comparison1_yuck" min="0" max="10" value="5" oninput="updateComparison1()" onchange="validateNumberInput(this)">
-                        </div>
-                    </div>
-                    <div class="input-container">
-                        <div class="input-label fff-tag">F.F.F. (重)</div>
-                        <div class="number-input-wrapper">
-                            <input type="number" class="number-input" id="comparison1_fff" min="0" max="10" value="5" oninput="updateComparison1()" onchange="validateNumberInput(this)">
+                        <div class="number-input-group">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input editable" id="comparison1_yuck" min="0" max="10" value="5" oninput="updateComparison1()" onblur="fixNumberInput(this)" onfocus="this.select()">
+                                <span class="vs-text">vs</span>
+                                <input type="number" class="number-input calculated" id="comparison1_fff" readonly tabindex="-1">
+                            </div>
                         </div>
                     </div>
                     <div class="input-sum" id="sum1">总分: 10/10</div>
@@ -452,19 +475,17 @@
                     <strong>异与众</strong>：这首歌所展现的意象是更接近众识之美，还是异端之美。Yuck代表的"异"是边缘、解构，是下水道梦核；YJIJ代表的"众"是世间美与毁灭的浓缩与毁灭。
                 </div>
                 <div class="comparison-detail">
-                    输入0-10分，两个分数之和必须为10
+                    输入0-10分，修改Yuck分数，YJIJ会自动计算
                 </div>
                 <div class="comparison-inputs">
-                    <div class="input-container">
+                    <div class="input-row">
                         <div class="input-label yuck-tag">Yuck (异)</div>
-                        <div class="number-input-wrapper">
-                            <input type="number" class="number-input" id="comparison2_yuck" min="0" max="10" value="5" oninput="updateComparison2()" onchange="validateNumberInput(this)">
-                        </div>
-                    </div>
-                    <div class="input-container">
-                        <div class="input-label yjij-tag">YJIJ (众)</div>
-                        <div class="number-input-wrapper">
-                            <input type="number" class="number-input" id="comparison2_yjij" min="0" max="10" value="5" oninput="updateComparison2()" onchange="validateNumberInput(this)">
+                        <div class="number-input-group">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input editable" id="comparison2_yuck" min="0" max="10" value="5" oninput="updateComparison2()" onblur="fixNumberInput(this)" onfocus="this.select()">
+                                <span class="vs-text">vs</span>
+                                <input type="number" class="number-input calculated" id="comparison2_yjij" readonly tabindex="-1">
+                            </div>
                         </div>
                     </div>
                     <div class="input-sum" id="sum2">总分: 10/10</div>
@@ -485,19 +506,17 @@
                     <strong>内与外</strong>：你在这部作品里看到了什么。F.F.F.代表的"内"是朝内的自我叩问；YJIJ代表的"外"是向外的感官体验。
                 </div>
                 <div class="comparison-detail">
-                    输入0-10分，两个分数之和必须为10
+                    输入0-10分，修改F.F.F.分数，YJIJ会自动计算
                 </div>
                 <div class="comparison-inputs">
-                    <div class="input-container">
+                    <div class="input-row">
                         <div class="input-label fff-tag">F.F.F. (内)</div>
-                        <div class="number-input-wrapper">
-                            <input type="number" class="number-input" id="comparison3_fff" min="0" max="10" value="5" oninput="updateComparison3()" onchange="validateNumberInput(this)">
-                        </div>
-                    </div>
-                    <div class="input-container">
-                        <div class="input-label yjij-tag">YJIJ (外)</div>
-                        <div class="number-input-wrapper">
-                            <input type="number" class="number-input" id="comparison3_yjij" min="0" max="10" value="5" oninput="updateComparison3()" onchange="validateNumberInput(this)">
+                        <div class="number-input-group">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input editable" id="comparison3_fff" min="0" max="10" value="5" oninput="updateComparison3()" onblur="fixNumberInput(this)" onfocus="this.select()">
+                                <span class="vs-text">vs</span>
+                                <input type="number" class="number-input calculated" id="comparison3_yjij" readonly tabindex="-1">
+                            </div>
                         </div>
                     </div>
                     <div class="input-sum" id="sum3">总分: 10/10</div>
@@ -531,9 +550,9 @@
             <div id="plot"></div>
             <div class="instructions">
                 <strong>坐标解读：</strong><br>
-                • 左下方顶点：<strong>YJIJ</strong> (极致/众/向外)<br>
-                • 右下方顶点：<strong>Yuck</strong> (戏谑/轻/异端)<br>
-                • 上方顶点：<strong>F.F.F.</strong> (真诚/重/向内)<br>
+                • 左下方顶点：<strong>YJIJ</strong> (众/外)<br>
+                • 右下方顶点：<strong>Yuck</strong> (轻/异)<br>
+                • 上方顶点：<strong>F.F.F.</strong> (重/内)<br>
                 每个点的颜色由三个顶点颜色的渐变混合决定，离某个顶点越近，该顶点的颜色在混合色中越明显。
             </div>
         </div>
@@ -550,11 +569,28 @@
         // 存储歌曲数据
         let songs = JSON.parse(localStorage.getItem('musicSongs')) || [];
         
-        // 验证数字输入
-        function validateNumberInput(input) {
-            let value = parseInt(input.value) || 0;
-            if (value < 0) input.value = 0;
-            if (value > 10) input.value = 10;
+        // 修复数字输入问题
+        function fixNumberInput(input) {
+            let value = parseInt(input.value);
+            
+            // 如果输入为空或非数字，设置为0
+            if (isNaN(value)) {
+                value = 0;
+            }
+            
+            // 确保在0-10范围内
+            value = Math.max(0, Math.min(10, value));
+            
+            input.value = value;
+            
+            // 根据输入框的ID调用对应的更新函数
+            if (input.id === 'comparison1_yuck') {
+                updateComparison1();
+            } else if (input.id === 'comparison2_yuck') {
+                updateComparison2();
+            } else if (input.id === 'comparison3_fff') {
+                updateComparison3();
+            }
         }
         
         // 更新第一次比较
@@ -563,23 +599,23 @@
             const fffInput = document.getElementById('comparison1_fff');
             
             // 获取当前值
-            let yuckValue = parseInt(yuckInput.value) || 0;
-            let fffValue = parseInt(fffInput.value) || 0;
+            let yuckValue = parseInt(yuckInput.value);
+            
+            // 如果输入为空或非数字，设置为0
+            if (isNaN(yuckValue)) {
+                yuckValue = 0;
+                yuckInput.value = 0;
+            }
             
             // 确保在0-10范围内
             yuckValue = Math.max(0, Math.min(10, yuckValue));
-            fffValue = Math.max(0, Math.min(10, fffValue));
+            yuckInput.value = yuckValue;
             
-            // 确保和为10
-            if (yuckValue + fffValue !== 10) {
-                if (yuckValue + fffValue < 10) {
-                    fffValue = 10 - yuckValue;
-                } else {
-                    yuckValue = 10 - fffValue;
-                }
-                yuckInput.value = yuckValue;
-                fffInput.value = fffValue;
-            }
+            // 计算F.F.F.的值
+            const fffValue = 10 - yuckValue;
+            
+            // 更新F.F.F.的显示
+            fffInput.value = fffValue;
             
             document.getElementById('sum1').textContent = `总分: ${yuckValue + fffValue}/10`;
             updatePercentages();
@@ -590,21 +626,21 @@
             const yuckInput = document.getElementById('comparison2_yuck');
             const yjijInput = document.getElementById('comparison2_yjij');
             
-            let yuckValue = parseInt(yuckInput.value) || 0;
-            let yjijValue = parseInt(yjijInput.value) || 0;
+            let yuckValue = parseInt(yuckInput.value);
+            
+            if (isNaN(yuckValue)) {
+                yuckValue = 0;
+                yuckInput.value = 0;
+            }
             
             yuckValue = Math.max(0, Math.min(10, yuckValue));
-            yjijValue = Math.max(0, Math.min(10, yjijValue));
+            yuckInput.value = yuckValue;
             
-            if (yuckValue + yjijValue !== 10) {
-                if (yuckValue + yjijValue < 10) {
-                    yjijValue = 10 - yuckValue;
-                } else {
-                    yuckValue = 10 - yjijValue;
-                }
-                yuckInput.value = yuckValue;
-                yjijInput.value = yjijValue;
-            }
+            // 计算YJIJ的值
+            const yjijValue = 10 - yuckValue;
+            
+            // 更新YJIJ的显示
+            yjijInput.value = yjijValue;
             
             document.getElementById('sum2').textContent = `总分: ${yuckValue + yjijValue}/10`;
             updatePercentages();
@@ -615,21 +651,21 @@
             const fffInput = document.getElementById('comparison3_fff');
             const yjijInput = document.getElementById('comparison3_yjij');
             
-            let fffValue = parseInt(fffInput.value) || 0;
-            let yjijValue = parseInt(yjijInput.value) || 0;
+            let fffValue = parseInt(fffInput.value);
+            
+            if (isNaN(fffValue)) {
+                fffValue = 0;
+                fffInput.value = 0;
+            }
             
             fffValue = Math.max(0, Math.min(10, fffValue));
-            yjijValue = Math.max(0, Math.min(10, yjijValue));
+            fffInput.value = fffValue;
             
-            if (fffValue + yjijValue !== 10) {
-                if (fffValue + yjijValue < 10) {
-                    yjijValue = 10 - fffValue;
-                } else {
-                    fffValue = 10 - yjijValue;
-                }
-                fffInput.value = fffValue;
-                yjijInput.value = yjijValue;
-            }
+            // 计算YJIJ的值
+            const yjijValue = 10 - fffValue;
+            
+            // 更新YJIJ的显示
+            yjijInput.value = yjijValue;
             
             document.getElementById('sum3').textContent = `总分: ${fffValue + yjijValue}/10`;
             updatePercentages();
@@ -713,11 +749,8 @@
             
             // 重置比较为默认值
             document.getElementById('comparison1_yuck').value = 5;
-            document.getElementById('comparison1_fff').value = 5;
             document.getElementById('comparison2_yuck').value = 5;
-            document.getElementById('comparison2_yjij').value = 5;
             document.getElementById('comparison3_fff').value = 5;
-            document.getElementById('comparison3_yjij').value = 5;
             updateComparison1();
             updateComparison2();
             updateComparison3();
@@ -866,7 +899,7 @@
                     size: 20,
                     color: blendedColors,
                     line: { 
-                        width: 2, 
+                        width: 1, 
                         color: '#ffffff' 
                     },
                     opacity: 0.9
@@ -997,7 +1030,6 @@
             // 初始化图表
             setTimeout(updatePlot, 100);
             
-            
             // 添加键盘快捷键
             document.getElementById('songName').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -1005,11 +1037,11 @@
                 }
             });
             
-            // 阻止虚拟键盘缩放
-            const inputs = document.querySelectorAll('input[type="number"]');
+            // 输入框聚焦时选中文本
+            const inputs = document.querySelectorAll('.number-input.editable');
             inputs.forEach(input => {
                 input.addEventListener('focus', function() {
-                    window.scrollTo(0, 0);
+                    this.select();
                 });
             });
         });
