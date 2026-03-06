@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小南南音乐美学坐标分析仪</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --yuck-color: #ebfbe5;      /* 浅绿色 - 戏谑/轻/异端 */
+            --fff-color: #7ea68d;       /* 深绿色 - 真诚/重/向内 */
+            --yjij-color: #d4fffa;      /* 浅蓝色 - 极致/众/向外 */
+            --bg-color: #121212;        /* 黑色背景 */
+            --card-bg: rgba(30, 30, 30, 0.9);
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #333333;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            padding: 20px 15px 40px;
+        }
+        
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .header h1 {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        h2 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .comparison-section {
+            margin-bottom: 30px;
+        }
+        
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 12px;
+            background: rgba(50, 50, 50, 0.8);
+        }
+        
+        .dimension-pair {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .dimension-tag {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .yuck-tag { 
+            background-color: var(--yuck-color); 
+            color: #333;
+        }
+        
+        .yjij-tag { 
+            background-color: var(--yjij-color); 
+            color: #333;
+        }
+        
+        .fff-tag { 
+            background-color: var(--fff-color); 
+            color: #333;
+        }
+        
+        .comparison-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-bottom: 20px;
+            padding: 0 15px;
+        }
+        
+        .comparison-detail {
+            font-size: 0.8rem;
+            color: #888;
+            font-style: italic;
+            margin-top: 8px;
+            line-height: 1.3;
+        }
+        
+        .comparison-slider {
+            padding: 0 15px;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .slider-label {
+            width: 100px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .slider-input {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(100, 100, 100, 0.5);
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .slider-yuck::-webkit-slider-thumb {
+            background: var(--yuck-color);
+        }
+        
+        .slider-yjij::-webkit-slider-thumb {
+            background: var(--yjij-color);
+        }
+        
+        .slider-fff::-webkit-slider-thumb {
+            background: var(--fff-color);
+        }
+        
+        .slider-value {
+            width: 40px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .slider-sum {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        .percentage-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .dimension-percentage {
+            text-align: center;
+            padding: 20px 15px;
+            border-radius: 15px;
+            background: rgba(50, 50, 50, 0.8);
+        }
+        
+        .dimension-percentage h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .dimension-percentage .percentage {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .dimension-percentage .dimension-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .dimension-percentage.yuck { border-top: 4px solid var(--yuck-color); }
+        .dimension-percentage.yjij { border-top: 4px solid var(--yjij-color); }
+        .dimension-percentage.fff { border-top: 4px solid var(--fff-color); }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-primary:hover {
+            background: #444;
+        }
+        
+        .btn-primary:active {
+            transform: translateY(2px);
+        }
+        
+        #plot {
+            width: 100%;
+            height: 500px;
+            margin: 20px 0;
+        }
+        
+        .song-list {
+            margin-top: 20px;
+        }
+        
+        .song-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(50, 50, 50, 0.8);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .song-info {
+            flex: 1;
+        }
+        
+        .song-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+        
+        .song-percentages {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .delete-btn {
+            background: #7ea68d;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .instructions {
+            background: rgba(50, 50, 50, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .instructions strong {
+            color: var(--yuck-color);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5rem; }
+            .header p { font-size: 0.9rem; }
+            .card { padding: 20px; }
+            .dimension-pair { flex-direction: column; gap: 10px; }
+            .slider-container { flex-direction: column; align-items: stretch; }
+            .slider-input { flex-direction: column; }
+            .slider-label { width: 100%; text-align: left; }
+            .percentage-section { grid-template-columns: 1fr; }
+        }
+        
+        /* 输入框样式 */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .input-group input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(50, 50, 50, 0.8);
+            color: var(--text-primary);
+        }
+        
+        .input-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--yuck-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>🎵 小南南音乐美学坐标</h1>
+            <p>如果用Yuck当作切口，生出通往You jump I jump和F.F.F.的两条分支，小南南的音乐世界可以如何构建</p>
+        </div>
+        
+        <div class="card">
+            <h2>歌曲信息</h2>
+            <div class="input-group">
+                <label for="songName">歌名</label>
+                <input type="text" id="songName" placeholder="例如：Yuck, F.F.F., You Jump, I Jump" autocomplete="off">
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>三维度</h2>
+            
+            <!-- 第一次比较：轻 vs 重 -->
+            <div class="comparison-section">
+                <div class="comparison-header">
+                    <div class="dimension-pair">
+                        <span class="dimension-tag yuck-tag">Yuck (轻)</span>
+                        <span style="font-weight: 300; color: var(--text-secondary);">vs</span>
+                        <span class="dimension-tag fff-tag">F.F.F. (重)</span>
+                    </div>
+                    <div style="color: var(--text-secondary);">#1</div>
+                </div>
+                <div class="comparison-desc">
+                    <strong>轻与重</strong>：你从这首歌身上感到怎样的重量呢。Yuck代表的"轻"，是戏谑、流动、有趣，是永恒少年；F.F.F.代表的"重"是真诚、自剖、带有血色的重量。
+                </div>
+                <div class="comparison-detail">
+                    滑动滑块分配10分，越偏向"轻"则Yuck分数越高，越偏向"重"则F.F.F.分数越高
+                </div>
+                <div class="comparison-slider">
+                    <div class="slider-container">
+                        <div class="slider-label yuck-tag">Yuck (轻)</div>
+                        <div class="slider-input">
+                            <input type="range" class="slider-yuck" id="comparison1_yuck" min="0" max="10" value="5" oninput="updateComparison1()">
+                            <div class="slider-value" id="value1_yuck">5</div>
+                        </div>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label fff-tag">F.F.F. (重)</div>
+                        <div class="slider-input">
+                            <input type="range" class="slider-fff" id="comparison1_fff" min="0" max="10" value="5" oninput="updateComparison1()">
+                            <div class="slider-value" id="value1_fff">5</div>
+                        </div>
+                    </div>
+                    <div class="slider-sum" id="sum1">总分: 10/10</div>
+                </div>
+            </div>
+            
+            <!-- 第二次比较：异 vs 众 -->
+            <div class="comparison-section">
+                <div class="comparison-header">
+                    <div class="dimension-pair">
+                        <span class="dimension-tag yuck-tag">Yuck (异)</span>
+                        <span style="font-weight: 300; color: var(--text-secondary);">vs</span>
+                        <span class="dimension-tag yjij-tag">YJIJ (众)</span>
+                    </div>
+                    <div style="color: var(--text-secondary);">#2</div>
+                </div>
+                <div class="comparison-desc">
+                    <strong>异与众</strong>：这首歌所展现的意象是更接近众识之美，还是异端之美。Yuck代表的"异"是边缘、解构，是下水道梦核；YJIJ代表的"众"是世间美与毁灭的浓缩与毁灭。
+                </div>
+                <div class="comparison-detail">
+                    滑动滑块分配10分，越偏向"异端"则Yuck分数越高，越偏向"大众"则YJIJ分数越高
+                </div>
+                <div class="comparison-slider">
+                    <div class="slider-container">
+                        <div class="slider-label yuck-tag">Yuck (异)</div>
+                        <div class="slider-input">
+                            <input type="range" class="slider-yuck" id="comparison2_yuck" min="0" max="10" value="5" oninput="updateComparison2()">
+                            <div class="slider-value" id="value2_yuck">5</div>
+                        </div>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label yjij-tag">YJIJ (众)</div>
+                        <div class="slider-input">
+                            <input type="range" class="slider-yjij" id="comparison2_yjij" min="0" max="10" value="5" oninput="updateComparison2()">
+                            <div class="slider-value" id="value2_yjij">5</div>
+                        </div>
+                    </div>
+                    <div class="slider-sum" id="sum2">总分: 10/10</div>
+                </div>
+            </div>
+            
+            <!-- 第三次比较：内 vs 外 -->
+            <div class="comparison-section">
+                <div class="comparison-header">
+                    <div class="dimension-pair">
+                        <span class="dimension-tag fff-tag">F.F.F. (内)</span>
+                        <span style="font-weight: 300; color: var(--text-secondary);">vs</span>
+                        <span class="dimension-tag yjij-tag">YJIJ (外)</span>
+                    </div>
+                    <div style="color: var(--text-secondary);">#3</div>
+                </div>
+                <div class="comparison-desc">
+                    <strong>内与外</strong>：你在这部作品里看到了什么。F.F.F.代表的"内"是朝内的自我叩问；YJIJ代表的"外"是向外的感官体验。
+                </div>
+                <div class="comparison-detail">
+                    滑动滑块分配10分，越偏向"内向"则F.F.F.分数越高，越偏向"外向"则YJIJ分数越高
+                </div>
+                <div class="comparison-slider">
+                    <div class="slider-container">
+                        <div class="slider-label fff-tag">F.F.F. (内)</div>
+                        <div class="slider-input">
+                            <input type="range" class="slider-fff" id="comparison3_fff" min="0" max="10" value="5" oninput="updateComparison3()">
+                            <div class="slider-value" id="value3_fff">5</div>
+                        </div>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label yjij-tag">YJIJ (外)</div>
+                        <div class="slider-input">
+                            <input type="range" class="slider-yjij" id="comparison3_yjij" min="0" max="10" value="5" oninput="updateComparison3()">
+                            <div class="slider-value" id="value3_yjij">5</div>
+                        </div>
+                    </div>
+                    <div class="slider-sum" id="sum3">总分: 10/10</div>
+                </div>
+            </div>
+            
+            <!-- 百分比显示 -->
+            <div class="percentage-section">
+                <div class="dimension-percentage yuck">
+                    <h3>Yuck 比例</h3>
+                    <div class="percentage" id="percentYuck">33.3%</div>
+                    <div class="dimension-desc">(轻 + 异)</div>
+                </div>
+                <div class="dimension-percentage yjij">
+                    <h3>YJIJ 比例</h3>
+                    <div class="percentage" id="percentYJIJ">33.3%</div>
+                    <div class="dimension-desc">(众 + 外)</div>
+                </div>
+                <div class="dimension-percentage fff">
+                    <h3>F.F.F. 比例</h3>
+                    <div class="percentage" id="percentFFF">33.3%</div>
+                    <div class="dimension-desc">(重 + 内)</div>
+                </div>
+            </div>
+            
+            <button class="btn-primary" onclick="addSong()">添加歌曲到坐标图</button>
+        </div>
+        
+        <div class="card">
+            <h2>美学坐标图</h2>
+            <div id="plot"></div>
+            <div class="instructions">
+                <strong>坐标解读：</strong><br>
+                • 左下方顶点：<strong>YJIJ</strong> (极致/众/向外)<br>
+                • 右下方顶点：<strong>Yuck</strong> (戏谑/轻/异端)<br>
+                • 上方顶点：<strong>F.F.F.</strong> (真诚/重/向内)<br>
+                每个点的颜色由三个顶点颜色的渐变混合决定，离某个顶点越近，该顶点的颜色在混合色中越明显。
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>已分析歌曲</h2>
+            <div id="songsContainer" class="song-list">
+                <div class="loading">暂无歌曲，请在上面添加</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 存储歌曲数据
+        let songs = JSON.parse(localStorage.getItem('musicSongs')) || [];
+        
+        // 更新第一次比较
+        function updateComparison1() {
+            const yuckSlider = document.getElementById('comparison1_yuck');
+            const fffSlider = document.getElementById('comparison1_fff');
+            
+            // 获取当前值
+            let yuckValue = parseInt(yuckSlider.value);
+            let fffValue = parseInt(fffSlider.value);
+            
+            // 确保和为10
+            if (yuckValue + fffValue !== 10) {
+                if (yuckValue + fffValue < 10) {
+                    fffValue = 10 - yuckValue;
+                } else {
+                    yuckValue = 10 - fffValue;
+                }
+                yuckSlider.value = yuckValue;
+                fffSlider.value = fffValue;
+            }
+            
+            // 更新显示
+            document.getElementById('value1_yuck').textContent = yuckValue;
+            document.getElementById('value1_fff').textContent = fffValue;
+            document.getElementById('sum1').textContent = `总分: ${yuckValue + fffValue}/10`;
+            
+            updatePercentages();
+        }
+        
+        // 更新第二次比较
+        function updateComparison2() {
+            const yuckSlider = document.getElementById('comparison2_yuck');
+            const yjijSlider = document.getElementById('comparison2_yjij');
+            
+            let yuckValue = parseInt(yuckSlider.value);
+            let yjijValue = parseInt(yjijSlider.value);
+            
+            if (yuckValue + yjijValue !== 10) {
+                if (yuckValue + yjijValue < 10) {
+                    yjijValue = 10 - yuckValue;
+                } else {
+                    yuckValue = 10 - yjijValue;
+                }
+                yuckSlider.value = yuckValue;
+                yjijSlider.value = yjijValue;
+            }
+            
+            document.getElementById('value2_yuck').textContent = yuckValue;
+            document.getElementById('value2_yjij').textContent = yjijValue;
+            document.getElementById('sum2').textContent = `总分: ${yuckValue + yjijValue}/10`;
+            
+            updatePercentages();
+        }
+        
+        // 更新第三次比较
+        function updateComparison3() {
+            const fffSlider = document.getElementById('comparison3_fff');
+            const yjijSlider = document.getElementById('comparison3_yjij');
+            
+            let fffValue = parseInt(fffSlider.value);
+            let yjijValue = parseInt(yjijSlider.value);
+            
+            if (fffValue + yjijValue !== 10) {
+                if (fffValue + yjijValue < 10) {
+                    yjijValue = 10 - fffValue;
+                } else {
+                    fffValue = 10 - yjijValue;
+                }
+                fffSlider.value = fffValue;
+                yjijSlider.value = yjijValue;
+            }
+            
+            document.getElementById('value3_fff').textContent = fffValue;
+            document.getElementById('value3_yjij').textContent = yjijValue;
+            document.getElementById('sum3').textContent = `总分: ${fffValue + yjijValue}/10`;
+            
+            updatePercentages();
+        }
+        
+        // 更新百分比显示
+        function updatePercentages() {
+            const yuck1 = parseInt(document.getElementById('comparison1_yuck').value);
+            const yuck2 = parseInt(document.getElementById('comparison2_yuck').value);
+            const fff1 = parseInt(document.getElementById('comparison1_fff').value);
+            const fff3 = parseInt(document.getElementById('comparison3_fff').value);
+            const yjij2 = parseInt(document.getElementById('comparison2_yjij').value);
+            const yjij3 = parseInt(document.getElementById('comparison3_yjij').value);
+            
+            const totalYuck = yuck1 + yuck2;
+            const totalFFF = fff1 + fff3;
+            const totalYJIJ = yjij2 + yjij3;
+            
+            const total = totalYuck + totalFFF + totalYJIJ;
+            const yuckPercent = (totalYuck / total * 100).toFixed(1);
+            const fffPercent = (totalFFF / total * 100).toFixed(1);
+            const yjijPercent = (totalYJIJ / total * 100).toFixed(1);
+            
+            document.getElementById('percentYuck').textContent = `${yuckPercent}%`;
+            document.getElementById('percentFFF').textContent = `${fffPercent}%`;
+            document.getElementById('percentYJIJ').textContent = `${yjijPercent}%`;
+            
+            return { 
+                yuck: parseFloat(yuckPercent), 
+                fff: parseFloat(fffPercent), 
+                yjij: parseFloat(yjijPercent),
+                rawScores: { yuck: totalYuck, fff: totalFFF, yjij: totalYJIJ }
+            };
+        }
+        
+        // 添加歌曲
+        function addSong() {
+            const nameInput = document.getElementById('songName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                alert('请输入歌名');
+                nameInput.focus();
+                return;
+            }
+            
+            // 获取百分比
+            const percentages = updatePercentages();
+            
+            const song = {
+                name: name,
+                yuck: percentages.yuck,
+                fff: percentages.fff,
+                yjij: percentages.yjij,
+                rawScores: percentages.rawScores,
+                comparisons: {
+                    comp1: {
+                        yuck: parseInt(document.getElementById('comparison1_yuck').value),
+                        fff: parseInt(document.getElementById('comparison1_fff').value)
+                    },
+                    comp2: {
+                        yuck: parseInt(document.getElementById('comparison2_yuck').value),
+                        yjij: parseInt(document.getElementById('comparison2_yjij').value)
+                    },
+                    comp3: {
+                        fff: parseInt(document.getElementById('comparison3_fff').value),
+                        yjij: parseInt(document.getElementById('comparison3_yjij').value)
+                    }
+                },
+                id: Date.now() + Math.random()
+            };
+            
+            songs.push(song);
+            saveSongs();
+            updateSongList();
+            updatePlot();
+            
+            // 清空输入
+            nameInput.value = '';
+            nameInput.focus();
+            
+            // 重置比较为默认值
+            document.getElementById('comparison1_yuck').value = 5;
+            document.getElementById('comparison1_fff').value = 5;
+            document.getElementById('comparison2_yuck').value = 5;
+            document.getElementById('comparison2_yjij').value = 5;
+            document.getElementById('comparison3_fff').value = 5;
+            document.getElementById('comparison3_yjij').value = 5;
+            updateComparison1();
+            updateComparison2();
+            updateComparison3();
+        }
+        
+        // 删除歌曲
+        function deleteSong(id) {
+            songs = songs.filter(song => song.id !== id);
+            saveSongs();
+            updateSongList();
+            updatePlot();
+        }
+        
+        // 保存到本地存储
+        function saveSongs() {
+            localStorage.setItem('musicSongs', JSON.stringify(songs));
+        }
+        
+        // 更新歌曲列表
+        function updateSongList() {
+            const container = document.getElementById('songsContainer');
+            
+            if (songs.length === 0) {
+                container.innerHTML = '<div class="loading">暂无歌曲，请在上面添加</div>';
+                return;
+            }
+            
+            let html = '';
+            songs.forEach(song => {
+                html += `
+                <div class="song-item">
+                    <div class="song-info">
+                        <div class="song-name">${song.name}</div>
+                        <div class="song-percentages">
+                            Yuck: ${song.yuck}% | YJIJ: ${song.yjij}% | F.F.F.: ${song.fff}%
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteSong(${song.id})">×</button>
+                </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // 颜色混合函数：基于三个顶点的颜色和百分比计算混合色
+        function blendColors(yuckPercent, fffPercent, yjijPercent) {
+            // 将百分比转换为权重（0-1）
+            const yuckWeight = yuckPercent / 100;
+            const fffWeight = fffPercent / 100;
+            const yjijWeight = yjijPercent / 100;
+            
+            // 三个顶点的颜色（十六进制）
+            const yuckColor = {r: 235, g: 251, b: 229}; // #ebfbe5
+            const fffColor = {r: 126, g: 166, b: 141};  // #7ea68d
+            const yjijColor = {r: 212, g: 255, b: 250}; // #d4fffa
+            
+            // 计算加权平均值
+            const r = Math.round(
+                yuckWeight * yuckColor.r + 
+                fffWeight * fffColor.r + 
+                yjijWeight * yjijColor.r
+            );
+            
+            const g = Math.round(
+                yuckWeight * yuckColor.g + 
+                fffWeight * fffColor.g + 
+                yjijWeight * yjijColor.g
+            );
+            
+            const b = Math.round(
+                yuckWeight * yuckColor.b + 
+                fffWeight * fffColor.b + 
+                yjijWeight * yjijColor.b
+            );
+            
+            // 确保在0-255范围内
+            const clamp = (value) => Math.min(255, Math.max(0, value));
+            
+            // 转换为十六进制
+            const toHex = (c) => {
+                const hex = clamp(c).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            };
+            
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+        
+        // 更新图表 - 修改顶点映射并添加渐变色
+        function updatePlot() {
+            const plotDiv = document.getElementById('plot');
+            
+            if (!songs.length) {
+                const layout = {
+                    title: { 
+                        text: '请添加歌曲查看坐标图', 
+                        font: { size: 18, color: '#e0e0e0' } 
+                    },
+                    paper_bgcolor: '#121212',
+                    plot_bgcolor: '#121212',
+                    xaxis: { visible: false },
+                    yaxis: { visible: false },
+                    annotations: [{
+                        text: '暂无数据',
+                        xref: 'paper',
+                        yref: 'paper',
+                        x: 0.5,
+                        y: 0.5,
+                        showarrow: false,
+                        font: { size: 20, color: '#888' }
+                    }]
+                };
+                Plotly.newPlot(plotDiv, [], layout, { 
+                    responsive: true, 
+                    displayModeBar: false 
+                });
+                return;
+            }
+            
+            // 准备数据
+            // 根据您的要求调整顶点映射：
+            // yuck对应b轴（右下），fff对应c轴（上），yjij对应a轴（左下）
+            const aData = songs.map(s => s.yjij);  // YJIJ -> a轴（左下）
+            const bData = songs.map(s => s.yuck);  // Yuck -> b轴（右下）
+            const cData = songs.map(s => s.fff);   // FFF -> c轴（上）
+            
+            const names = songs.map(s => s.name);
+            
+            // 为每个点计算渐变色
+            const blendedColors = songs.map(song => 
+                blendColors(song.yuck, song.fff, song.yjij)
+            );
+            
+            // 创建轨迹
+            const trace = {
+                type: 'scatterternary',
+                mode: 'markers+text',
+                a: aData,
+                b: bData,
+                c: cData,
+                text: names,
+                textposition: 'top center',
+                textfont: { 
+                    size: 12, 
+                    family: 'Arial',
+                    color: '#e0e0e0'
+                },
+                marker: {
+                    size: 20,
+                    color: blendedColors,  // 使用混合渐变色
+                    line: { 
+                        width: 2, 
+                        color: '#ffffff' 
+                    },
+                    opacity: 0.9
+                },
+                hoverinfo: 'text',
+                hovertext: songs.map(s => 
+                    `<b>${s.name}</b><br>` +
+                    `Yuck: ${s.yuck}%<br>` +
+                    `YJIJ: ${s.yjij}%<br>` +
+                    `F.F.F.: ${s.fff}%<br>` +
+                    `颜色: ${blendColors(s.yuck, s.fff, s.yjij)}`
+                ),
+                name: '歌曲坐标'
+            };
+            
+            // 创建布局
+            const layout = {
+                title: { 
+                    text: '周震南音乐美学三元坐标图',
+                    font: { 
+                        size: 20, 
+                        family: 'Arial',
+                        color: '#e0e0e0'
+                    }
+                },
+                ternary: {
+                    sum: 100,  // 三个维度的和为100%
+                    aaxis: {   // a轴配置 (YJIJ - 左下)
+                        title: {
+                            text: 'YJIJ<br>',
+                            font: { 
+                                size: 16, 
+                                color: '#d4fffa',  // YJIJ颜色
+                                family: 'Arial'
+                            }
+                        },
+                        min: 0,
+                        linewidth: 3,
+                        linecolor: '#d4fffa',
+                        tickcolor: '#d4fffa',
+                        gridcolor: 'rgba(212, 255, 250, 0.3)',
+                        tickfont: { 
+                            size: 10,
+                            color: '#888'
+                        },
+                        tickformat: '.0f',
+                        ticksuffix: '%'
+                    },
+                    baxis: {   // b轴配置 (Yuck - 右下)
+                        title: {
+                            text: 'Yuck<br>',
+                            font: { 
+                                size: 16, 
+                                color: '#ebfbe5',  // Yuck颜色
+                                family: 'Arial'
+                            }
+                        },
+                        min: 0,
+                        linewidth: 3,
+                        linecolor: '#ebfbe5',
+                        tickcolor: '#ebfbe5',
+                        gridcolor: 'rgba(235, 251, 229, 0.3)',
+                        tickfont: { 
+                            size: 10,
+                            color: '#888'
+                        },
+                        tickformat: '.0f',
+                        ticksuffix: '%'
+                    },
+                    caxis: {   // c轴配置 (F.F.F. - 上)
+                        title: {
+                            text: 'F.F.F.<br>',
+                            font: { 
+                                size: 16, 
+                                color: '#7ea68d',  // F.F.F.颜色
+                                family: 'Arial'
+                            }
+                        },
+                        min: 0,
+                        linewidth: 3,
+                        linecolor: '#7ea68d',
+                        tickcolor: '#7ea68d',
+                        gridcolor: 'rgba(126, 166, 141, 0.3)',
+                        tickfont: { 
+                            size: 10,
+                            color: '#888'
+                        },
+                        tickformat: '.0f',
+                        ticksuffix: '%'
+                    },
+                    bgcolor: '#1a1a1a'
+                },
+                paper_bgcolor: '#121212',
+                plot_bgcolor: '#121212',
+                showlegend: false,
+                margin: { t: 80, r: 80, b: 80, l: 80 },
+                hoverlabel: {
+                    bgcolor: '#2d2d2d',
+                    font: { 
+                        size: 12, 
+                        family: 'Arial',
+                        color: '#fff'
+                    },
+                    bordercolor: '#666'
+                }
+            };
+            
+            // 清除现有图表
+            Plotly.purge(plotDiv);
+            
+            // 绘制图表
+            Plotly.newPlot(plotDiv, [trace], layout, {
+                responsive: true,
+                displayModeBar: true,
+                displaylogo: false
+            });
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化滑块
+            updateComparison1();
+            updateComparison2();
+            updateComparison3();
+            
+            // 更新歌曲列表
+            updateSongList();
+            
+            // 初始化图表
+            setTimeout(updatePlot, 100);
+            
+            // 添加示例数据（可选）
+            if (!songs.length && localStorage.getItem('firstVisit') !== 'true') {
+                songs = [
+                    {
+                        name: 'Yuck',
+                        yuck: 80.0, fff: 10.0, yjij: 10.0,
+                        rawScores: { yuck: 16, fff: 2, yjij: 2 },
+                        id: 1
+                    },
+                    {
+                        name: 'You Jump, I Jump',
+                        yuck: 10.0, fff: 10.0, yjij: 80.0,
+                        rawScores: { yuck: 2, fff: 2, yjij: 16 },
+                        id: 2
+                    },
+                    {
+                        name: 'F.F.F.',
+                        yuck: 10.0, fff: 80.0, yjij: 10.0,
+                        rawScores: { yuck: 2, fff: 16, yjij: 2 },
+                        id: 3
+                    }
+                ];
+                saveSongs();
+                localStorage.setItem('firstVisit', 'true');
+                updateSongList();
+                updatePlot();
+            }
+            
+            // 添加键盘快捷键
+            document.getElementById('songName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addSong();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
