@@ -527,18 +527,6 @@
         </div>
         
         <div class="card">
-            <h2>美学坐标图</h2>
-            <div id="plot"></div>
-            <div class="instructions">
-                <strong>坐标解读：</strong><br>
-                • 左下方顶点：<strong>YJIJ</strong> (极致/众/向外)<br>
-                • 右下方顶点：<strong>Yuck</strong> (戏谑/轻/异端)<br>
-                • 上方顶点：<strong>F.F.F.</strong> (真诚/重/向内)<br>
-                每个点的颜色由三个顶点颜色的渐变混合决定，离某个顶点越近，该顶点的颜色在混合色中越明显。
-            </div>
-        </div>
-        
-        <div class="card">
             <h2>已分析歌曲</h2>
             <div id="songsContainer" class="song-list">
                 <div class="loading">暂无歌曲，请在上面添加</div>
@@ -996,9 +984,7 @@
             
             // 初始化图表
             setTimeout(updatePlot, 100);
-            
-            // 添加示例数据
-            if (!songs.length && localStorage.getItem('firstVisit') !== 'true') 
+        
             
             // 添加键盘快捷键
             document.getElementById('songName').addEventListener('keypress', function(e) {
